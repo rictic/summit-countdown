@@ -126,5 +126,14 @@
   }
   document.registerElement('summit-countdown', Countdown);
 </script>
+
+<script defer async>
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch((error) => {
+      // registration failed
+      console.error('SW Registration failed with ' + error);
+    });
+  }
+</script>
 </body>
 </html>

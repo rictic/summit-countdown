@@ -8,7 +8,14 @@ handlers:
 - url: /favicon\.ico
   static_files: favicon.ico
   upload: favicon\.ico
+  secure: always
 
 - url: /
   static_files: index.html
   upload: index\.html
+  secure: always
+
+- url: /sw.js
+  static_files: sw.js
+  upload: sw\.js
+  secure: always
