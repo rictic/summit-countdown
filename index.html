@@ -58,6 +58,8 @@
   }
 </script>
 <script>
+  'use strict';
+
   const progressBarTemplate = document.querySelector('template#progress-bar');
   class ProgressBar extends HTMLElement {
     attachedCallback() {
@@ -128,6 +130,7 @@
 </script>
 
 <script defer async>
+  'use strict';
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch((error) => {
       // registration failed
