@@ -19,3 +19,7 @@ handlers:
   static_files: sw.js
   upload: sw\.js
   secure: always
+
+- url: /.well-known/acme-challenge/N1kBc1KYYY6kHb_Us4bHNDt-eLEzdxilg56UqSWWu40
+  static_files: acme-challenge.txt
+  upload: acme-challenge\.txt
