@@ -53,8 +53,11 @@
 
 <script>
   if (!document.registerElement || !document.body.createShadowRoot) {
-    debugger;
-    document.write('<' + 'script src="https://polygit.org/components/webcomponentsjs/webcomponents.js"></' + 'script>')
+    document.write(
+        '<' +
+        'script src=' +
+        '"https://polygit.org/components/webcomponentsjs/webcomponents.js"></' +
+        'script>');
   }
 </script>
 <script>
@@ -67,12 +70,20 @@
       const shadow = this.createShadowRoot();
       this.bar = body.querySelector('#bar');
       shadow.appendChild(body);
+      this._draw();
     }
 
     setProgress(min, max, value) {
       const length = max - min;
-      const progress = ((value - min) / length) * 100;
-      this.bar.style.width = progress + '%';
+      this.progress = ((value - min) / length) * 100;
+      this._draw();
+    }
+
+    _draw() {
+      if (!this.bar || !this.progress) {
+        return;
+      }
+      this.bar.style.width = `${this.progress}%`;
     }
   }
   document.registerElement('progress-bar', ProgressBar);
@@ -106,7 +117,8 @@
       if (days < 7) {
         nextUpdateTime = 1000;
         const pad = (n) => n < 10 ? `0${n}` : `${n}`;
-        this.timeCounter.innerText = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+        this.timeCounter.innerText =
+            `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
       }
 
       this.progressBar.setProgress(+this.start, +this.end, +now);
@@ -132,7 +144,7 @@
 <script defer async>
   'use strict';
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js', { scope: '/' }).catch((error) => {
+    navigator.serviceWorker.register('/sw.js', {scope: '/'}).catch((error) => {
       // registration failed
       console.error('SW Registration failed with ' + error);
     });
