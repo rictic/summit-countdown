@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Polymer Summit Countdown!</title>
+</head>
+<body>
+
+<summit-countdown start="2016/05/20" end="2016/10/15 08:00:00">
+</summit-countdown>
+
+<template id='summit-countdown'>
+  <style>
+    :host {
+      display: block;
+      width: 100%;
+      padding-top: 200px;
+      font-size: 150%
+    }
+    * {
+      text-align: center
+    }
+  </style>
+  <h1>
+    Polymer Summit in
+    <div>
+      <span id='dayCounter'></span>
+      <span id='timeCounter'></span>
+    </div>
+  </h1>
+  <progress-bar></progress-bar>
+</template>
+
+<template id='progress-bar'>
+  <style>
+    :host {
+      display: block;
+      width: 100%;
+    }
+    #wrapper {
+      background-color: #f1f1f1;
+    }
+    #bar {
+      height: 10px;
+      background-color: #a16a94;
+    }
+  </style>
+  <div id='wrapper'>
+    <div id='bar'></div>
+  </div>
+</template>
+
+<script>
+  if (!document.registerElement || !document.body.createShadowRoot) {
+    debugger;
+    document.write('<' + 'script src="https://polygit.org/components/webcomponentsjs/webcomponents.js"></' + 'script>')
+  }
+</script>
+<script>
+  const progressBarTemplate = document.querySelector('template#progress-bar');
+  class ProgressBar extends HTMLElement {
+    attachedCallback() {
+      const body = document.importNode(progressBarTemplate.content, true);
+      const shadow = this.createShadowRoot();
+      this.bar = body.querySelector('#bar');
+      shadow.appendChild(body);
+    }
+
+    setProgress(min, max, value) {
+      const length = max - min;
+      const progress = ((value - min) / length) * 100;
+      this.bar.style.width = progress + '%';
+    }
+  }
+  document.registerElement('progress-bar', ProgressBar);
+
+  const countdownTemplate = document.querySelector('template#summit-countdown');
+  class Countdown extends HTMLElement {
+    attachedCallback() {
+      this.start = new Date(this.getAttribute('start'));
+      this.end = new Date(this.getAttribute('end'));
+      const body = document.importNode(countdownTemplate.content, true);
+      this.dayCounter = body.querySelector('#dayCounter');
+      this.timeCounter = body.querySelector('#timeCounter');
+      this.progressBar = body.querySelector('progress-bar');
+      const shadow = this.createShadowRoot();
+      shadow.appendChild(body);
+      this.updateCount = 0;
+      this.update();
+    }
+    detachedCallback() {
+      window.cancelTimeout(this.nextFrame)
+    }
+
+    update() {
+      this.updateCount++;
+      const now = new Date();
+      const duration = this.end - now;
+      const {days, hours, minutes, seconds} = this.formatDuration(duration);
+      this.dayCounter.innerText = `${days} days`;
+
+      let nextUpdateTime = 60 * 60 * 1000;
+      if (days < 7) {
+        nextUpdateTime = 1000;
+        const pad = (n) => n < 10 ? `0${n}` : `${n}`;
+        this.timeCounter.innerText = `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+      }
+
+      this.progressBar.setProgress(+this.start, +this.end, +now);
+      this.nextFrame = window.setTimeout(() => this.update(), nextUpdateTime);
+    }
+
+    formatDuration(duration) {
+      const extracted = {};
+      duration = Math.floor(duration / 1000);
+      extracted.seconds = duration % 60;
+      duration = Math.floor(duration / 60);
+      extracted.minutes = duration % 60;
+      duration = Math.floor(duration / 60);
+      extracted.hours = duration % 24;
+      duration = Math.floor(duration / 24);
+      extracted.days = duration;
+      return extracted;
+    }
+  }
+  document.registerElement('summit-countdown', Countdown);
+</script>
+</body>
+</html>
