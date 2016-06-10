@@ -23,3 +23,7 @@ handlers:
 - url: /.well-known/acme-challenge/N1kBc1KYYY6kHb_Us4bHNDt-eLEzdxilg56UqSWWu40
   static_files: acme-challenge.txt
   upload: acme-challenge\.txt
+
+- url: /robots.txt
+  static_files: robots.txt
+  upload: robots\.txt
